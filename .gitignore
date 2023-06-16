@@ -20,6 +20,21 @@
 *.tar
 *.zip
 
+# NPM #
+#######
+node_modules
+npm-debug.log
+
+# Jekyll #
+##########
+_site
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+Gemfile.lock
+**/Gemfile.lock
+
 # Logs and databases #
 ######################
 *.log
