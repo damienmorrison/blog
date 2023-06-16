@@ -9,16 +9,6 @@
 
   <div class="flex-1">
     <div class="flex items-center">
-      {% if post.authors %}
-        <div class="flex ml-4">
-          {% for author in post.authors %}
-            {% include author.html
-        author=author
-        show_author_name=false
-        %}
-          {% endfor %}
-        </div>
-      {% endif %}
       <div class="text-sm font-medium text-gray-700">{{ post.date | date_to_long_string }}</div>
     </div>
 

@@ -3,7 +3,7 @@ layout: post
 title: "A Guide to Migrating to Sitecore Headless with Next.js"
 date: 2022-12-29T10:26:40+10:00
 authors: ["Damien Morrison"]
-categories: ["Sitecore", "Next.js", "Headless"]
+categories: ["Sitecore", "Nextjs", "Headless"]
 tags: ["Blog"]
 description: Learn how to to go headless with Sitecore and Next.js.
 thumbnail: "assets/images/unsplash-vZFJfIsEa0E-640x360.jpg"
