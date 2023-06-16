@@ -1,4 +1,5 @@
-baseurl: "/blog/"
+url: 'https://damienmorrison.github.io'
+baseurl: 'blog'
 permalink: pretty
 title: "Damien Morrison"
 collections_dir: collections
