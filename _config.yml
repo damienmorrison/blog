@@ -1,5 +1,4 @@
-url: 'https://damienmorrison.github.io'
-baseurl: 'blog'
+baseurl: '/blog/'
 permalink: pretty
 title: "Damien Morrison"
 collections_dir: collections
@@ -39,7 +38,7 @@ paginate_path: /blog/page:num/
 collections:
   posts:
     output: true
-    permalink: /blog/:path/
+    permalink: /:path/
 
 defaults:
   - scope:
@@ -74,3 +73,4 @@ exclude:
   - postcss.config.js
   - tailwind.config.js
   - netlify.toml
+  - RunJekyllInDocker.ps1
