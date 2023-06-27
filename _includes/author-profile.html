@@ -1,0 +1,10 @@
+{% assign author_name = include.author | replace: " ", "_" | downcase %}
+{% assign author_object = site.data.authors[author_name] %}
+
+{% if author_object %}
+<div class="flex justify-end items-end mb-3 last:mb-0">
+  {% if author_object.image %}
+    <img height="128" width="128" class="rounded-full border-white border-2" src="{{ author_object.image | relative_url }}" alt="{{ author_object.name }}"/>
+  {% endif %}
+</div>
+{% endif %}
