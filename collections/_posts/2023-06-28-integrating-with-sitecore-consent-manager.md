@@ -3,14 +3,14 @@ layout: post
 title: Integrating with Sitecore Consent Manager using Next.js
 date: 2023-06-29
 authors: ["Damien Morrison"]
-categories: ["Sitecore", "Sitecore XP", ]
+categories: ["Sitecore", "Sitecore XP", "Next.js"]
 tags: ["Blog"]
-description: How to inform Sitecore of a user's tracking consent using Next.js
+description: How to inform Sitecore of a user's tracking consent using Sitecore XP and Next.js
 thumbnail: "assets/images/unsplash-BfrQnKBulYQ-640x427.jpg"
 image: "/assets/images/unsplash-BfrQnKBulYQ-2400x1600.jpg"
 ---
 
-Sitecore has introduced an API for managing the tracking consent with version 10.0, see [https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html](https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html) . You no longer have to fiddle around with the code yourself to somehow remove the SC_ANALYTICS_GLOBAL_COOKIE or update your Cookie Consent Management Tool (Cookiebot, Usercentrics, OneTrust, etc) with the users' selection. Now you simply call the Consent Manager API and Sitecore takes care of the rest. One small disadvantage is that Sitecore then stores the consent in a new cookie SC_TRACKING_CONSENT. An eye for an eye trade, but this cookie 
+Sitecore introduced an API for managing the tracking consent since version 10.0, see [https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html](https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html) . You no longer have to fiddle around with the code yourself to  remove the SC_ANALYTICS_GLOBAL_COOKIE. Now you simply call the Consent Manager API and Sitecore takes care of the rest. One small disadvantage is that Sitecore then stores the consent in a new cookie SC_TRACKING_CONSENT. An eye for an eye,  but this cookie merely stores the user's consent choice and it isn't used to identify the user in any way. 
 
 Sounds easy enough, but how do the integrations to the API look in different setups? 
 
@@ -87,26 +87,99 @@ At the time of writing it is the 30th of June 2023 and we can can see the expiry
 Once the Give/Revoke endpoints are in place we will need to integrate with the Cookie Management Tool so that the appropriate endpoint is called when the user makes their selection. 
 
 I will demonstrate the integration with Cookiebot, however the approach will be the same for all tools. 
-- Determine the click events or callbacks that you need to hook into in the Cookie Management tool and how to determine if a user has consenting to tracking
+- Determine the click events or callbacks that you need to hook into in the Cookie Management tool and how to determine if a user has consented to tracking
 - Register a callback or click event on the **client**
-- Call the appropriate give or revoke endpoint according to the users' selection
+- Call the appropriate give or revoke endpoint according to the user's selection
 - Add a rewrite entry in the next.config.js to proxy the request from the node server to Sitecore. You could also write a custom route handler if you need to any other processing, i.e. logging.
 
 ### Step 1: Handle user's tracking choice
 
 Cookiebot provides decent enough [developer documentation](https://www.cookiebot.com/en/developer) where we can find everything we need. 
 -  To react to the user's selection we'll use the *CookiebotOnAccept* and *CookiebotOnDecline* event listeners. 
-- To determine if they have consented to tracking, we need to check their selection for Statistics, since this is most appropriate for the type of tracking that Sitecore does. To do this, we'll check the *consent.statistics* property which is added to the global namespace on the client. 
+- To determine if they have consented to tracking, we need to check their selection for Statistics, as this category describes the type of tracking that Sitecore does. To do this, we'll check the *consent.statistics* property which is added to the global namespace on the client. 
 
-### Step 2: 
+### Step 2: Register the click event in Next.js
 
-### Step 3: 
+To register the client event in Next.js, we can use the useEffect React hook. Be sure to pass an empty array as a dependency to useEffect. We don't need anything other than a one-time registration here.  We can also hook into cleanup with the return function to remove the event listeners.
 
-### Step 4: 
+```js
+useEffect(() => {
+	const cookieBotAcceptEvent = async () => {
+		await handleCookieBotAccept(currentSite);
+	};
+	  
+	const cookieBotDeclineEvent = async () => {
+		await handleCookieBotDecline(currentSite);
+	};
+	
+	if (typeof window !== 'undefined') {
+		window.addEventListener('CookiebotOnAccept', cookieBotAcceptEvent);
+		window.addEventListener('CookiebotOnDecline', cookieBotDeclineEvent);
+	}
+	
+	return () => {
+		window.removeEventListener('CookiebotOnAccept', cookieBotAcceptEvent);
+		window.removeEventListener('CookiebotOnDecline', cookieBotDeclineEvent);
+	};
+}, []);
+```
+
+### Step 3: Handle the Click Events and call the endpoints
+
+Once an event has been triggered, we still need to determine if a consent choice has actually been made for statistics.  A little bit of logic is required to handle the different choices. Ensure to read the documentation on which selection fires which event.  
+
+Once we're finally nutted down what the choice was, we can call the give/revoke endpoints.
+
+```js
+const giveConsent = async (site: string): Promise<void> => {
+	await fetch(`/api/trackingConsent/give?sc_site=${site}`, {
+		method: 'PATCH',
+	}).catch((error) => {
+		console.error('Error giving consent:', error);
+	});
+};
+
+const revokeConsent = async (site: string): Promise<void> => {
+	await fetch(`/api/trackingConsent/revoke?sc_site=${site}`, {
+		method: 'PATCH',
+	}).catch((error) => {
+		console.error('Error revoking consent:', error);
+	});
+};
+
+  
+export const handleCookieBotAccept = async (site: string): Promise<void> => {
+	//is fired on buttons "Allow all cookies" & "Allow individual selection"
+	if (window.Cookiebot?.changed && window.Cookiebot.consent.statistics) {
+		giveConsent(site);
+	} else if 
+		(window.Cookiebot?.changed && !window.Cookiebot.consent.statistics) {
+			revokeConsent(site);
+	}
+};
+
+  
+export const handleCookieBotDecline = async (site: string): Promise<void> => {
+	//is fired on buttons "Withdraw you consent" & "Use necessary cookies only"
+	if (window.Cookiebot?.changed && !window.Cookiebot.consent.statistics) {
+		revokeConsent(site);
+	}
+};
+```
 
 
-### Headless with Next.js
+### Step 4: Proxy request to Sitecore
 
+The final part of the flow is to ensure that Next.js proxy ferries the request to Sitecore and back. This is a good time to add the SC API Key since the proxy runs server-side.  Here we can add the following entry to the Next.js rewrite module in next.config.js.
+
+```js
+{
+	source: '/api/trackingConsent/:path*',
+	destination: `${jssConfig.sitecoreApiHost}/macaw/api/trackingconsent/:path*?sc_apikey=${jssConfig.sitecoreApiKey}`,
+},
+```
+
+#### Trusted Connection Issue
 
 If you see this error from the Next.js Server, it's most likely a trusted connection issue, since your local server runs unsecured on http and Sitecore on SSL with https. Since your website will (hopefully)  be running on SSL this should only be a development problem. I've read that setting NODE_TLS_REJECT_UNAUTHORIZED to 0 in Node should get around this but it wasn't enough for me. The easiest thing to do was to set up a http binding for my local Sitecore instance. 
 
@@ -120,5 +193,5 @@ If you see this error from the Next.js Server, it's most likely a trusted connec
 ```
 
 
-
+### Conclusion
 
