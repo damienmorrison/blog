@@ -7,57 +7,57 @@ categories: ["Sitecore", "Sitecore XP", "Next.js"]
 tags: ["Blog"]
 description: How to inform Sitecore of a user's tracking consent using Sitecore XP and Next.js
 thumbnail: "assets/images/unsplash-BfrQnKBulYQ-640x427.jpg"
-image: "/assets/images/unsplash-BfrQnKBulYQ-2400x1600.jpg"
 ---
 
-Sitecore introduced an API for managing the tracking consent since version 10.0, see [https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html](https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html) . You no longer have to fiddle around with the code yourself to  remove the SC_ANALYTICS_GLOBAL_COOKIE. Now you simply call the Consent Manager API and Sitecore takes care of the rest. One small disadvantage is that Sitecore then stores the consent in a new cookie SC_TRACKING_CONSENT. An eye for an eye,  but this cookie merely stores the user's consent choice and it isn't used to identify the user in any way. 
+Sitecore introduced the [Tracking Consent API](https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html) for managing the tracking consent since version 10.0. You no longer have to fiddle around with the code yourself to  remove the SC_ANALYTICS_GLOBAL_COOKIE. Now you simply call the Consent Manager API and Sitecore takes care of the rest. One small disadvantage is that Sitecore then stores the consent in a new cookie SC_TRACKING_CONSENT. Not quite an eye for an eye as this cookie merely stores the user's consent choice and it isn't used to identify the user in any way. 
 
 Sounds easy enough, but how do the integrations to the API look in different setups? 
 
-> This blog post focuses on a headless Sitecore XP setup so it won't be relevant for XM Cloud. It's definitely food for thought how this would be done in XM Cloud. Sitecore must be exposing their own API for these scenarios?? A blog post for another day. 
+>This blog post focuses on a headless Sitecore XP setup so it won't be relevant for XM Cloud. 
 
-### Sitecore Controller
+It's definitely food for thought how this would be done in XM Cloud. Sitecore must be exposing their own API for these scenarios? A blog post for another day.
+
+## Sitecore Integration
 
 On the side of Sitecore, it's a very painless integration with Sitecore's Consent Manager. See [Sitecore's documentation](https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html) for a full run down, but essentially you just need to call the *GiveConsent* and *RevokeConsent* methods from the Consent Manager Service respectively. 
 
 Sending through null to these calls will instruct Sitecore to use the *IContentStorage* service, which, by default, is the new cookie mentioned above, SC_TRACKING_CONSENT. 
 
 ```c#
-    [RoutePrefix("api/trackingconsent")]
-    public class TrackingConsentController : Controller
+[RoutePrefix("api/trackingconsent")]
+public class TrackingConsentController : Controller
+{
+    private readonly IConsentManager _consentManager;
+
+    public TrackingConsentController(IConsentManager consentManager)
     {
-        private readonly IConsentManager _consentManager;
-
-        public TrackingConsentController(IConsentManager consentManager)
-        {
-            this._consentManager = consentManager;
-        }
-
-        [HttpPatch]
-        [Route("give")]
-        public ActionResult GiveConsent()
-        {
-            this._consentManager.GiveConsent(null);
-
-            return new JsonResult()
-            {
-                Data = new { Message = "Consent has been granted" }
-            };
-        }
-
-
-        [HttpPatch]
-        [Route("revoke")]
-        public ActionResult RevokeConsent()
-        {
-            this._consentManager.RevokeConsent(null);
-
-            return new JsonResult
-            {
-                Data = new { Message = "Consent has been revoked" }
-            };
-        }
+        this._consentManager = consentManager;
     }
+
+    [HttpPatch]
+    [Route("give")]
+    public ActionResult GiveConsent()
+    {
+	    this._consentManager.GiveConsent(null);
+
+        return new JsonResult()
+        {
+            Data = new { Message = "Consent has been granted" }
+        };
+    }
+
+    [HttpPatch]
+    [Route("revoke")]
+    public ActionResult RevokeConsent()
+    {
+        this._consentManager.RevokeConsent(null);
+
+        return new JsonResult
+        {
+	        Data = new { Message = "Consent has been revoked" }
+        };
+    }
+}
 ```
 
 That's pretty much all we need to do. Sitecore handles the rest internally. 
@@ -92,13 +92,13 @@ I will demonstrate the integration with Cookiebot, however the approach will be 
 - Call the appropriate give or revoke endpoint according to the user's selection
 - Add a rewrite entry in the next.config.js to proxy the request from the node server to Sitecore. You could also write a custom route handler if you need to any other processing, i.e. logging.
 
-### Step 1: Handle user's tracking choice
+### Handle user's tracking choice
 
 Cookiebot provides decent enough [developer documentation](https://www.cookiebot.com/en/developer) where we can find everything we need. 
 -  To react to the user's selection we'll use the *CookiebotOnAccept* and *CookiebotOnDecline* event listeners. 
 - To determine if they have consented to tracking, we need to check their selection for Statistics, as this category describes the type of tracking that Sitecore does. To do this, we'll check the *consent.statistics* property which is added to the global namespace on the client. 
 
-### Step 2: Register the click event in Next.js
+### Register the click event in Next.js
 
 To register the client event in Next.js, we can use the useEffect React hook. Be sure to pass an empty array as a dependency to useEffect. We don't need anything other than a one-time registration here.  We can also hook into cleanup with the return function to remove the event listeners.
 
@@ -124,7 +124,7 @@ useEffect(() => {
 }, []);
 ```
 
-### Step 3: Handle the Click Events and call the endpoints
+### Handle the Click Events and call the endpoints
 
 Once an event has been triggered, we still need to determine if a consent choice has actually been made for statistics.  A little bit of logic is required to handle the different choices. Ensure to read the documentation on which selection fires which event.  
 
@@ -146,7 +146,6 @@ const revokeConsent = async (site: string): Promise<void> => {
 		console.error('Error revoking consent:', error);
 	});
 };
-
   
 export const handleCookieBotAccept = async (site: string): Promise<void> => {
 	//is fired on buttons "Allow all cookies" & "Allow individual selection"
@@ -157,7 +156,6 @@ export const handleCookieBotAccept = async (site: string): Promise<void> => {
 			revokeConsent(site);
 	}
 };
-
   
 export const handleCookieBotDecline = async (site: string): Promise<void> => {
 	//is fired on buttons "Withdraw you consent" & "Use necessary cookies only"
@@ -168,7 +166,7 @@ export const handleCookieBotDecline = async (site: string): Promise<void> => {
 ```
 
 
-### Step 4: Proxy request to Sitecore
+### Proxy request to Sitecore
 
 The final part of the flow is to ensure that Next.js proxy ferries the request to Sitecore and back. This is a good time to add the SC API Key since the proxy runs server-side.  Here we can add the following entry to the Next.js rewrite module in next.config.js.
 
@@ -192,6 +190,6 @@ If you see this error from the Next.js Server, it's most likely a trusted connec
   code: 'UNABLE_TO_VERIFY_LEAF_SIGNATURE'
 ```
 
+## Conclusion
 
-### Conclusion
-
+As we can see, Sitecore certainly does a lot of heavy-lifting for us here, but there is still come integration work to be done in Next.JS to handle the events and notify Sitecore. A word of warning, there have been reports that Sitecore is not always respecting the consent choice being stored. See the blog post by George Change [here](https://georgechang.io/posts/2023/making-sitecore-xp-compliant-with-gdpr-and-other-privacy-laws-because-its-not/). This is obviously an issue that Sitecore will hopefully sort out soon. 

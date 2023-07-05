@@ -4,7 +4,7 @@ title: "About Me"
 date: 2023-06-08T15:15:34+10:00
 authors: ["Damien Morrison"]
 permalink: "/about/"
-description: "Sitecore Developer and Architect experienced at crafting robust solutions and leveraging Sitecore's powerful capabilities"
+description: "I've been building enterprise web solutions in .NET for the last 20 years"
 image: "https://source.unsplash.com/vc3iVL_znJ8/1920x1280"
 ---
 

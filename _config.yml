@@ -1,4 +1,4 @@
-baseurl: '/blog/'
+baseurl: '/'
 permalink: pretty
 title: "Damien Morrison"
 collections_dir: collections

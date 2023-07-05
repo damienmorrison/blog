@@ -2,38 +2,12 @@
 layout: default
 ---
 
-{% include heading.html heading=page.title description=page.description align="center" date=page.date %}
+{% include heading.html heading=page.title description=page.description align="center" date=page.date categories=page.categories %}
 
-<img width="1600" height="900" src="{{ page.image }}"/>
-
-<div class="flex flex-col md:flex-row py-6 md:py-12">
-
-  <div class="w-full md:w-3/12 pr-3">
-    <h3 class="text-sm font-medium mb-1 hidden md:block">Categories</h3>
-    {% if page.categories %}
-      <div class="hidden md:block">
-        {% for category in page.categories %}
-          {% include category-badge.html %}
-        {% endfor %}
-      </div>
-    {% endif %}
-  </div>
-
-  <div class="w-full md:w-9/12">
-    <div class="prose">
-      {{ content }}
-    </div>
-  </div>
-
-</div>
-
-{% if page.categories %}
-  <div class="py-6 mt-6 border-t-2 block md:hidden">
-    <h3 class="text-sm font-medium mb-1">Categories</h3>
-    <div>
-      {% for category in page.categories %}
-        {% include category-badge.html %}
-      {% endfor %}
-    </div>
-  </div>
+{% if page.image %}
+  <img width="1600" height="900" src="{{ page.image }}"/>
 {% endif %} 
+
+<div class="prose prose-quoteless lg:prose-lg mx-auto pb-6 md:pb-12">
+  {{ content }}
+</div>
