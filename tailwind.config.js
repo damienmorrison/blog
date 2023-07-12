@@ -10,6 +10,21 @@ module.exports = {
       lg: "1024px",
       xl: "1280px",
     },
+    extend: {
+      typography: (defaultTheme) => ({
+        DEFAULT: {
+          css: {
+            maxWidth: '75ch',
+          }
+        },
+        quoteless: {
+          css: {
+            'blockquote p:first-of-type::before': { content: 'none' },
+            'blockquote p:first-of-type::after': { content: 'none' },
+          },
+        },
+      }),
+    },
   },
   variants: {
     extend: {

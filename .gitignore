@@ -35,6 +35,11 @@ _site/
 Gemfile.lock
 **/Gemfile.lock
 
+# Obsidian #
+############
+collections/_posts/.obsidian
+collections/_posts/_templates
+
 # Logs and databases #
 ######################
 *.log
