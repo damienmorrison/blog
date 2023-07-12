@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <title>
+  
+    Integrating with Sitecore Consent Manager using Next.js
+    -
+    Sitecore Techdeck - Damien Morrison
+  
+</title>
+
+
+  <meta name="description" content="How to inform Sitecore of a user's tracking consent using Sitecore XP and Next.js"/>
+
+
+<meta property="og:title" content="Integrating with Sitecore Consent Manager using Next.js"/>
+
+<meta content="website" property="og:type"/>
+<meta property="og:url" content="/2023-06-28-integrating-with-sitecore-consent-manager/"/>
+
+  <meta property="og:image" content="https://twitter.com/damiennmorrison/photo"/>
+
+<meta property="og:description" content="How to inform Sitecore of a user's tracking consent using Sitecore XP and Next.js"/>
+
+<meta content="summary" name="twitter:card"/>
+<meta name="twitter:site" content="@damiennmorrison"/>
+
+<meta name="twitter:creator" content="@damiennmorrison"/>
+
+
+    <link rel="icon" href="/favicon.png">
+    <link href="/assets/css/style.css" rel="stylesheet">
+  </head>
+  <body class="page ">
+    <div id="menu-container"
+  class=" bg-blue-600 h-screen w-screen fixed z-50 p-8 flex-col items-center justify-around bg-gradient-to-b from-green-400 to-blue-500 opacity-90 overflow-hidden hidden">
+  <div id="menu-close" class="top-7 right-7 absolute">
+    <svg aria-hidden="true" focusable="false" class="h-6 text-white" role="img" xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 352 512">
+      <path fill="currentColor"
+        d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z">
+      </path>
+    </svg>
+  </div>
+  <div class="flex flex-col text-center text-white text-2xl font-bold">
+    
+    <a class="py-2" href="/">Home</a>
+    
+    <a class="py-2" href="/about/">About Me</a>
+    
+  </div>
+</div>
+    <div class="container mx-auto px-6 md:px-4">
+      <header class="flex items-center justify-between py-6">
+  <div class="logo hidden md:block">
+  <a class="flex items-center hover:opacity-70 transition duration-300 ease-in-out" href="/">
+    
+    <img class="mr-2" height="36px" width="36px"
+      alt="Sitecore Techdeck - Damien Morrison Logo" src="/assets/images/logo/logo.svg" />
+    
+    
+    <h2 class="text-2xl font-sans font-semibold">Damien Morrison</h2>
+    
+  </a>
+</div>
+<div class="logo-mobile block md:hidden">
+  <a class="flex items-center hover:opacity-70 transition duration-300 ease-in-out" href="/">
+    
+    <img height="36px" width="36px"
+      alt="Sitecore Techdeck - Damien Morrison Logo" src="/assets/images/logo/logo-mobile.svg" />
+    
+    
+    <h2 class="text-2xl font-sans font-semibold"></h2>
+    
+  </a>
+</div>
+  <div class="" id="menu-trigger">
+    <svg aria-hidden="true" class="text-black" data-icon="bars" data-prefix="fas" focusable="false" height="24"
+      role="img" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"
+        fill="currentColor"></path>
+    </svg>
+  </div>
+</header>
+      
+
+
+
+
+
+<div class="pt-3 md:pt-6 pb-6 md:pb-12 lg:w-10/12 md:text-center mx-auto">
+  
+  <div class="font-medium text-gray-700">29 June 2023</div>
+  
+  <h1 class="heading text-4xl md:text-5xl font-bold font-sans md:leading-tight">
+    Integrating with Sitecore Consent Manager using Next.js
+  </h1>
+  
+  <h2 class="text-xl text-gray-600 mt-2">How to inform Sitecore of a user's tracking consent using Sitecore XP and Next.js</h2>
+  
+  
+  <div class="pt-6">
+    
+      <a class="p-1 px-3 mr-1 mb-1 inline-block text-xs font-mono rounded bg-green-200 text-green-800 hover:bg-blue-200 hover:text-blue-800 transition duration-300 ease-in-out" href="/category/sitecore">Sitecore</a>
+    
+      <a class="p-1 px-3 mr-1 mb-1 inline-block text-xs font-mono rounded bg-green-200 text-green-800 hover:bg-blue-200 hover:text-blue-800 transition duration-300 ease-in-out" href="/category/sitecore-xp">Sitecore XP</a>
+    
+      <a class="p-1 px-3 mr-1 mb-1 inline-block text-xs font-mono rounded bg-green-200 text-green-800 hover:bg-blue-200 hover:text-blue-800 transition duration-300 ease-in-out" href="/category/next-js">Next JS</a>
+    
+      <a class="p-1 px-3 mr-1 mb-1 inline-block text-xs font-mono rounded bg-green-200 text-green-800 hover:bg-blue-200 hover:text-blue-800 transition duration-300 ease-in-out" href="/category/headless">Headless</a>
+    
+  </div>
+
+</div>
+
+ 
+
+<div class="prose prose-quoteless lg:prose-lg mx-auto pb-6 md:pb-12">
+  <p>Sitecore introduced the <a href="https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html">Tracking Consent API</a> for managing tracking consent since version 10.0. You no longer have to fiddle around with the code yourself to  remove the SC_ANALYTICS_GLOBAL_COOKIE. Now you simply call the Consent Manager API and Sitecore takes care of the rest. One small disadvantage is that Sitecore stores the consent in a new cookie SC_TRACKING_CONSENT. Not ideal when you’re normally try to reduce the use of cookies but this cookie merely stores the user’s consent choice and cannot be used to identify the user.</p>
+
+<p>Sounds easy enough, but how do the integrations to the API look in different setups?</p>
+
+<blockquote>
+  <p>This blog post focuses on a headless Sitecore XP setup so it won’t be relevant for XM Cloud.</p>
+</blockquote>
+
+<p>It’s definitely food for thought how this would be done in XM Cloud. Sitecore must be exposing their own API for these scenarios? A blog post for another day.</p>
+
+<h2 id="sitecore-integration">Sitecore Integration</h2>
+
+<p>On the side of Sitecore, it’s a very painless integration with Sitecore’s Consent Manager. See <a href="https://doc.sitecore.com/xp/en/developers/102/sitecore-experience-platform/manage-a-contact-s-tracking-consent-choices.html">Sitecore’s documentation</a> for a full run down, but essentially you just need to call the <em>GiveConsent</em> and <em>RevokeConsent</em> methods of the Consent Manager Service respectively.</p>
+
+<p>Sending through null to these calls will instruct Sitecore to use the <em>IContentStorage</em> service to identify consent, which, by default, uses the cookie mentioned above, the SC_TRACKING_CONSENT cookie.</p>
+
+<div class="language-c# highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nf">RoutePrefix</span><span class="p">(</span><span class="s">"api/trackingconsent"</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">TrackingConsentController</span> <span class="p">:</span> <span class="n">Controller</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IConsentManager</span> <span class="n">_consentManager</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">TrackingConsentController</span><span class="p">(</span><span class="n">IConsentManager</span> <span class="n">consentManager</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="n">_consentManager</span> <span class="p">=</span> <span class="n">consentManager</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="p">[</span><span class="n">HttpPatch</span><span class="p">]</span>
+    <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"give"</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="n">ActionResult</span> <span class="nf">GiveConsent</span><span class="p">()</span>
+    <span class="p">{</span>
+	    <span class="k">this</span><span class="p">.</span><span class="n">_consentManager</span><span class="p">.</span><span class="nf">GiveConsent</span><span class="p">(</span><span class="k">null</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">JsonResult</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">Data</span> <span class="p">=</span> <span class="k">new</span> <span class="p">{</span> <span class="n">Message</span> <span class="p">=</span> <span class="s">"Consent has been granted"</span> <span class="p">}</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+
+    <span class="p">[</span><span class="n">HttpPatch</span><span class="p">]</span>
+    <span class="p">[</span><span class="nf">Route</span><span class="p">(</span><span class="s">"revoke"</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="n">ActionResult</span> <span class="nf">RevokeConsent</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="n">_consentManager</span><span class="p">.</span><span class="nf">RevokeConsent</span><span class="p">(</span><span class="k">null</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="n">JsonResult</span>
+        <span class="p">{</span>
+	        <span class="n">Data</span> <span class="p">=</span> <span class="k">new</span> <span class="p">{</span> <span class="n">Message</span> <span class="p">=</span> <span class="s">"Consent has been revoked"</span> <span class="p">}</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>That’s pretty much all we need to do. Sitecore handles the rest internally.</p>
+
+<p>In this case of GiveConsent, Sitecore will start (or continue) tracking and will update the ContentStorage (the SC_TRACKING_CONSENT cookie by default).</p>
+
+<p>You can check that it’s working by inspecting the response headers on the request. You should see two cookies being set.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Set-Cookie</td>
+      <td>SC_TRACKING_CONSENT=choice; expires=Mon, 27-Jun-2033 14:09:43 GMT; path=/; secure; SameSite=None</td>
+    </tr>
+    <tr>
+      <td>Set-Cookie</td>
+      <td>SC_ANALYTICS_GLOBAL_COOKIE=id|False; expires=Mon, 27-Jun-2033 14:09:43 GMT; path=/; secure; HttpOnly; SameSite=None</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In the case of Revoke, Sitecore needs to carry out its due diligence to ensure any tracking is stopped and any trace of that contact is removed. Equally important, is that the SC_ANALYTICS_GLOBAL_COOKIE is removed.</p>
+
+<p>This again can be checked by inspecting the headers. This time you will also see two headers, but the SC_ANALYTICS_GLOBAL_COOKIE should be expired (to a time in the past). The browser will then pick up the expiry date and remove it.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Set-Cookie</td>
+      <td>SC_TRACKING_CONSENT=choice; expires=Mon, 27-Jun-2033 14:09:43 GMT; path=/; secure; SameSite=None</td>
+    </tr>
+    <tr>
+      <td>Set-Cookie</td>
+      <td>SC_ANALYTICS_GLOBAL_COOKIE=id|False; expires=Thu, 29-Jun-2023 15:26:18 GMT; path=/; secure; HttpOnly; SameSite=None</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="cookiebot-integration-in-next-js">Cookiebot Integration in Next JS</h2>
+
+<p>Once the Give/Revoke endpoints are in place we will need to integrate with the Cookie Management Tool so that the appropriate endpoint is called when the user makes their selection.</p>
+
+<p>I will demonstrate the integration with Cookiebot, however the following approach will be the same for any cookie management tool:</p>
+<ul>
+  <li>Handle the user’s tracking choice by hooking into the Cookie Management Tool’s click events or callbacks. You’ll also need to figure out whether the user has consented to tracking.</li>
+  <li>Call the appropriate give or revoke endpoint according to the user’s selection.</li>
+  <li>Add a rewrite entry in the next.config.js to proxy the request from the node server to Sitecore. You could also write a custom route handler if you need to do any other processing, i.e. logging.</li>
+</ul>
+
+<h3 id="handle-users-tracking-choice">Handle user’s tracking choice</h3>
+
+<p>Cookiebot provides decent enough <a href="https://www.cookiebot.com/en/developer">developer documentation</a> where we can find everything we need.</p>
+<ul>
+  <li>To react to the user’s selection we’ll use the <em>CookiebotOnAccept</em> and <em>CookiebotOnDecline</em> event listeners.</li>
+  <li>To determine if they have consented to tracking, we need to check their selection for Statistics, as this category best describes the type of tracking that Sitecore does. To do this, we’ll check the <em>consent.statistics</em> property which is added to the global namespace on the client.</li>
+</ul>
+
+<h3 id="register-the-click-event-in-nextjs">Register the click event in Next.js</h3>
+
+<p>To register the client event in Next.js, we can use the useEffect React hook. Be sure to pass an empty array as a dependency to useEffect. We don’t need anything other than a one-time registration here.  We can also remove the event listeners by utilising the return function.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">useEffect</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+	<span class="kd">const</span> <span class="nx">cookieBotAcceptEvent</span> <span class="o">=</span> <span class="k">async </span><span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="k">await</span> <span class="nf">handleCookieBotAccept</span><span class="p">(</span><span class="nx">currentSite</span><span class="p">);</span>
+	<span class="p">};</span>
+	  
+	<span class="kd">const</span> <span class="nx">cookieBotDeclineEvent</span> <span class="o">=</span> <span class="k">async </span><span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="k">await</span> <span class="nf">handleCookieBotDecline</span><span class="p">(</span><span class="nx">currentSite</span><span class="p">);</span>
+	<span class="p">};</span>
+	
+	<span class="k">if </span><span class="p">(</span><span class="k">typeof</span> <span class="nb">window</span> <span class="o">!==</span> <span class="dl">'</span><span class="s1">undefined</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nb">window</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">CookiebotOnAccept</span><span class="dl">'</span><span class="p">,</span> <span class="nx">cookieBotAcceptEvent</span><span class="p">);</span>
+		<span class="nb">window</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">CookiebotOnDecline</span><span class="dl">'</span><span class="p">,</span> <span class="nx">cookieBotDeclineEvent</span><span class="p">);</span>
+	<span class="p">}</span>
+	
+	<span class="k">return </span><span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="nb">window</span><span class="p">.</span><span class="nf">removeEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">CookiebotOnAccept</span><span class="dl">'</span><span class="p">,</span> <span class="nx">cookieBotAcceptEvent</span><span class="p">);</span>
+		<span class="nb">window</span><span class="p">.</span><span class="nf">removeEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">CookiebotOnDecline</span><span class="dl">'</span><span class="p">,</span> <span class="nx">cookieBotDeclineEvent</span><span class="p">);</span>
+	<span class="p">};</span>
+<span class="p">},</span> <span class="p">[]);</span>
+</code></pre></div></div>
+
+<h3 id="handle-the-click-events-and-call-the-endpoints">Handle the Click Events and call the endpoints</h3>
+
+<p>Once an event has been triggered, we still need to determine if a consent choice has actually been made for statistics.  A little bit of logic is required to handle the different choices. Ensure to read the documentation on which selection fires which event.</p>
+
+<p>Once we’re finally nutted down what the choice was, we can call the give/revoke endpoints.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">giveConsent</span> <span class="o">=</span> <span class="k">async </span><span class="p">(</span><span class="nx">site</span><span class="p">:</span> <span class="nx">string</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+	<span class="k">await</span> <span class="nf">fetch</span><span class="p">(</span><span class="s2">`/api/trackingConsent/give?sc_site=</span><span class="p">${</span><span class="nx">site</span><span class="p">}</span><span class="s2">`</span><span class="p">,</span> <span class="p">{</span>
+		<span class="na">method</span><span class="p">:</span> <span class="dl">'</span><span class="s1">PATCH</span><span class="dl">'</span><span class="p">,</span>
+	<span class="p">}).</span><span class="k">catch</span><span class="p">((</span><span class="nx">error</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Error giving consent:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+	<span class="p">});</span>
+<span class="p">};</span>
+
+<span class="kd">const</span> <span class="nx">revokeConsent</span> <span class="o">=</span> <span class="k">async </span><span class="p">(</span><span class="nx">site</span><span class="p">:</span> <span class="nx">string</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+	<span class="k">await</span> <span class="nf">fetch</span><span class="p">(</span><span class="s2">`/api/trackingConsent/revoke?sc_site=</span><span class="p">${</span><span class="nx">site</span><span class="p">}</span><span class="s2">`</span><span class="p">,</span> <span class="p">{</span>
+		<span class="na">method</span><span class="p">:</span> <span class="dl">'</span><span class="s1">PATCH</span><span class="dl">'</span><span class="p">,</span>
+	<span class="p">}).</span><span class="k">catch</span><span class="p">((</span><span class="nx">error</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Error revoking consent:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+	<span class="p">});</span>
+<span class="p">};</span>
+  
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">handleCookieBotAccept</span> <span class="o">=</span> <span class="k">async </span><span class="p">(</span><span class="nx">site</span><span class="p">:</span> <span class="nx">string</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+	<span class="c1">//is fired on buttons "Allow all cookies" &amp; "Allow individual selection"</span>
+	<span class="k">if </span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">Cookiebot</span><span class="p">?.</span><span class="nx">changed</span> <span class="o">&amp;&amp;</span> <span class="nb">window</span><span class="p">.</span><span class="nx">Cookiebot</span><span class="p">.</span><span class="nx">consent</span><span class="p">.</span><span class="nx">statistics</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nf">giveConsent</span><span class="p">(</span><span class="nx">site</span><span class="p">);</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> 
+		<span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">Cookiebot</span><span class="p">?.</span><span class="nx">changed</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nb">window</span><span class="p">.</span><span class="nx">Cookiebot</span><span class="p">.</span><span class="nx">consent</span><span class="p">.</span><span class="nx">statistics</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nf">revokeConsent</span><span class="p">(</span><span class="nx">site</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">};</span>
+  
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">handleCookieBotDecline</span> <span class="o">=</span> <span class="k">async </span><span class="p">(</span><span class="nx">site</span><span class="p">:</span> <span class="nx">string</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+	<span class="c1">//is fired on buttons "Withdraw you consent" &amp; "Use necessary cookies only"</span>
+	<span class="k">if </span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">Cookiebot</span><span class="p">?.</span><span class="nx">changed</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nb">window</span><span class="p">.</span><span class="nx">Cookiebot</span><span class="p">.</span><span class="nx">consent</span><span class="p">.</span><span class="nx">statistics</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nf">revokeConsent</span><span class="p">(</span><span class="nx">site</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="proxy-request-to-sitecore">Proxy request to Sitecore</h3>
+
+<p>The final part of the flow is to ensure that Next.js proxy ferries the request to Sitecore and back. This is a good time to add the SC API Key since the proxy runs server-side.  Here we can add the following entry to the Next.js rewrite module in next.config.js.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+	<span class="nl">source</span><span class="p">:</span> <span class="dl">'</span><span class="s1">/api/trackingConsent/:path*</span><span class="dl">'</span><span class="p">,</span>
+	<span class="nx">destination</span><span class="p">:</span> <span class="s2">`</span><span class="p">${</span><span class="nx">jssConfig</span><span class="p">.</span><span class="nx">sitecoreApiHost</span><span class="p">}</span><span class="s2">/macaw/api/trackingconsent/:path*?sc_apikey=</span><span class="p">${</span><span class="nx">jssConfig</span><span class="p">.</span><span class="nx">sitecoreApiKey</span><span class="p">}</span><span class="s2">`</span><span class="p">,</span>
+<span class="p">},</span>
+</code></pre></div></div>
+
+<h4 id="trusted-connection-issue">Trusted Connection Issue</h4>
+
+<p>If you see this error from the Next.js Server, it’s most likely a trusted connection issue, since your local server runs unsecured on http and Sitecore on SSL with https. Since your website will (hopefully) be running on SSL this should only be a development problem. I’ve read that setting NODE_TLS_REJECT_UNAUTHORIZED to 0 in Node should get around this but it wasn’t enough for me. The easiest thing to do is to set up a http binding for your local Sitecore instance.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- error Error: unable to verify the first certificate
+    at TLSSocket.onConnectSecure <span class="o">(</span>node:_tls_wrap:1540:34<span class="o">)</span>
+    at TLSSocket.emit <span class="o">(</span>node:events:513:28<span class="o">)</span>
+    at TLSSocket._finishInit <span class="o">(</span>node:_tls_wrap:959:8<span class="o">)</span>
+    at ssl.onhandshakedone <span class="o">(</span>node:_tls_wrap:743:12<span class="o">)</span> <span class="o">{</span>
+  code: <span class="s1">'UNABLE_TO_VERIFY_LEAF_SIGNATURE'</span>
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>As we can see, Sitecore certainly does a lot of heavy-lifting for us here, but there is still come integration work to be done in Next.JS to handle the events and notify Sitecore. A word of warning, there have been reports that Sitecore is not always respecting the consent choice being stored. See the blog post by George Change <a href="https://georgechang.io/posts/2023/making-sitecore-xp-compliant-with-gdpr-and-other-privacy-laws-because-its-not/">here</a>. This is no doubt an issue that Sitecore will  sort out soon.</p>
+
+</div>
+
+      <footer class="py-6 border-t-2">
+  <div class="container mx-auto">
+    <div class="flex mb-2">
+      
+      <a class="py-2 mr-2" href="https://github.com/damienmorrison"><img width="24" height="24" src="https://simpleicons.org/icons/github.svg" alt="Github" /></a>
+      
+      <a class="py-2 mr-2" href="https://twitter.com/damiennmorrison"><img width="24" height="24" src="https://simpleicons.org/icons/twitter.svg" alt="Twitter" /></a>
+      
+      <a class="py-2 mr-2" href="https://www.linkedin.com/in/damiennmorrison/"><img width="24" height="24" src="https://simpleicons.org/icons/linkedin.svg" alt="LinkedIn" /></a>
+      
+    </div>
+</footer>
+    </div>
+    
+    
+    
+
+    <script type="text/javascript" src="/assets/js/hamburger.js"></script>
+  </body>
+</html>
