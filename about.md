@@ -4,7 +4,7 @@ title: "About Me"
 date: 2023-06-08T15:15:34+10:00
 authors: ["Damien Morrison"]
 permalink: "/about/"
-description: "I've been building enterprise web solutions in .NET for the last 20 years"
+description: "I build enterprise web solutions in .NET and Sitecore."
 image: "https://source.unsplash.com/vc3iVL_znJ8/1920x1280"
 ---
 

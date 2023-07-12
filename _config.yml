@@ -1,6 +1,6 @@
 baseurl: '/'
 permalink: pretty
-title: "Damien Morrison"
+title: "Sitecore Techdeck - Damien Morrison"
 collections_dir: collections
 markdown: kramdown
 highlighter: rouge
