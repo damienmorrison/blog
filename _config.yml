@@ -32,6 +32,7 @@ plugins:
   - jekyll-postcss
   - jekyll-paginate
   - jekyll-sitemap
+  - jekyll-feed
 
 paginate: 3
 paginate_path: /blog/page:num/
