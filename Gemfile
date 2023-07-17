@@ -10,3 +10,5 @@ gem "jekyll-postcss"
 gem "jekyll-paginate"
 
 gem "jekyll-sitemap", "~> 1.4"
+
+gem "jekyll-feed", "~> 0.17.0"
